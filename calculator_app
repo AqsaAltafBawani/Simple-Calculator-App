@@ -1,0 +1,164 @@
+import 'package:flutter/material.dart';
+
+// Main function to start the app
+void main() {
+  runApp(Calculator_App());
+}
+
+// The main app widget
+class Calculator_App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'CALCULATOR APPLICATION',
+      home: Main_Home_Page(), // The main screen of the app
+      debugShowCheckedModeBanner: false, // Removes the debug banner
+    );
+  }
+}
+
+// The main screen where we add all the UI and logic
+class Main_Home_Page extends StatefulWidget {
+  @override
+  MainPage_State createState() => MainPage_State();
+}
+
+class MainPage_State extends State<Main_Home_Page> {
+  // Text controllers to get input from the user
+  TextEditingController number_1 = TextEditingController();
+  TextEditingController number_2 = TextEditingController();
+
+  String result = ''; // To store the result of calculations
+
+  // Function to perform calculations
+  void calculate(String operation) {
+    String num1Text = number_1.text; // Get the first number as text
+    String num2Text = number_2.text; // Get the second number as text
+
+    // Check if inputs are empty
+    if (num1Text.isEmpty || num2Text.isEmpty) {
+      setState(() {
+        result = 'Please enter both numbers.';
+      });
+      return;
+    }
+
+    // Convert text to numbers
+    double? num1 = double.tryParse(num1Text);
+    double? num2 = double.tryParse(num2Text);
+
+    // Check if the input is valid
+    if (num1 == null || num2 == null) {
+      setState(() {
+        result = 'Please enter valid numbers.';
+      });
+      return;
+    }
+
+    // Perform the selected operation
+    setState(() {
+      if (operation == '+') {
+        result = 'Result: ${num1 + num2}';
+      } else if (operation == '-') {
+        result = 'Result: ${num1 - num2}';
+      } else if (operation == '*') {
+        result = 'Result: ${num1 * num2}';
+      } else if (operation == '/') {
+        if (num2 == 0) {
+          result = 'Cannot divide by zero!';
+        } else {
+          result = 'Result: ${num1 / num2}';
+        }
+      }
+    });
+  }
+
+  // Function to clear inputs and reset result
+  void clearInputs() {
+    setState(() {
+      number_1.clear();
+      number_2.clear();
+      result = '';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(' SIMPLE CALCULATOR APPLICATION'), // Title at the top
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(25), // Adds space around the content
+        child: Column(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceAround, // Center content vertically
+          children: [
+            // Input field for the first number
+            TextField(
+              controller: number_1,
+              keyboardType: TextInputType.number, // Allows only numeric input
+              decoration: InputDecoration(
+                labelText: 'Enter the first number',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20), // Adds space between widgets
+
+            // Input field for the second number
+            TextField(
+              controller: number_2,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Enter the second number',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Row of buttons for the operations
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => calculate('+'),
+                  child: Text('Addition (+)'), // Addition button
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('-'),
+                  child: Text('Subtraction (-)'), // Subtraction button
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('*'),
+                  child: Text('Multiplication (*)'), // Multiplication button
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('/'),
+                  child: Text('Division (/)'), // Division button
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+
+            // Display the result
+            Text(
+              result,
+              style: TextStyle(
+                  fontSize: 22, color: const Color.fromARGB(255, 68, 47, 138)),
+            ),
+            SizedBox(height: 20),
+
+            // Clear button
+            ElevatedButton(
+              onPressed: clearInputs,
+              child: Text('Clear'),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.lightGreen),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
